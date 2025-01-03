@@ -1,0 +1,21 @@
+[project]
+name = "event_networking"
+version = "0.1.0"
+description = "event_networking using crewAI"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<=3.13"
+dependencies = [
+    "crewai[tools]>=0.86.0,<1.0.0",
+    "python-dotenv>=0.19.0"
+]
+
+[project.scripts]
+event_networking = "event_networking.main:run"
+run_crew = "event_networking.main:run"
+train = "event_networking.main:train"
+replay = "event_networking.main:replay"
+test = "event_networking.main:test"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
