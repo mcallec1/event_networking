@@ -1,103 +1,118 @@
 from crewai.tools import BaseTool
 from typing import Type
 from pydantic import BaseModel, Field
-from linkedin_scraper import Person, actions
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-import os
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
+import random
+from datetime import datetime, timedelta
 
 class LinkedInProfileInput(BaseModel):
     """Input schema for LinkedInProfileTool."""
     linkedin_url: str = Field(
         ..., 
-        description="The LinkedIn profile URL to scrape (e.g., 'https://www.linkedin.com/in/username')"
+        description="A placeholder URL - not used for actual profile generation"
     )
 
 class LinkedInProfileTool(BaseTool):
-    name: str = "LinkedIn Profile Scraper"
+    name: str = "Profile Generator"
     description: str = (
-        "A tool for scraping LinkedIn profiles. Provide a LinkedIn profile URL "
-        "to get information about the person's experience, education, and other "
-        "public profile information."
+        "A tool for generating realistic professional profiles with detailed "
+        "information about experience, education, and skills."
     )
     args_schema: Type[BaseModel] = LinkedInProfileInput
 
+    # Sample data for random generation
+    _first_names = ["Alex", "Jordan", "Taylor", "Morgan", "Casey", "Sam", "Jamie", "Robin", "Pat", "Drew", 
+                   "Chris", "Avery", "Quinn", "Riley", "Sydney"]
+    _last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", 
+                  "Martinez", "Lee", "Wang", "Kim", "Singh", "Patel"]
+    _companies = ["TechCorp Solutions", "DataFlow Systems", "Cloud Dynamics", "AI Innovations", 
+                 "Digital Frontier", "Future Technologies", "Smart Systems", "Tech Giants",
+                 "Data Dynamics", "Quantum Computing Inc"]
+    _positions = ["Software Engineer", "Data Scientist", "Product Manager", "DevOps Engineer", 
+                 "Full Stack Developer", "ML Engineer", "System Architect", "Cloud Engineer",
+                 "Technical Lead", "Research Scientist"]
+    _locations = ["San Francisco, CA", "New York, NY", "Seattle, WA", "Austin, TX", "Boston, MA",
+                 "Chicago, IL", "Los Angeles, CA", "Denver, CO", "Portland, OR", "Atlanta, GA"]
+    _skills = ["Python", "JavaScript", "React", "AWS", "Docker", "Kubernetes", "Machine Learning",
+              "SQL", "Node.js", "Git", "CI/CD", "Java", "Go", "TypeScript", "MongoDB"]
+    _universities = ["Stanford University", "MIT", "UC Berkeley", "Georgia Tech", "Carnegie Mellon",
+                    "University of Washington", "UCLA", "University of Michigan", "Cornell", "CalTech"]
+    _degrees = ["Bachelor of Science in Computer Science", "Master of Science in Software Engineering",
+                "Bachelor of Engineering", "Master of Computer Science", "Ph.D. in Computer Science",
+                "Master of Science in Data Science", "Bachelor of Science in Information Technology"]
+    _certifications = ["AWS Certified Solutions Architect", "Google Cloud Professional", "Azure Solutions Expert",
+                      "Certified Kubernetes Administrator", "CompTIA Security+", "Certified Scrum Master",
+                      "TensorFlow Developer Certificate", "MongoDB Certified Developer"]
+
+    def _generate_duration(self, start_year):
+        end_year = min(start_year + random.randint(1, 4), datetime.now().year)
+        if end_year == datetime.now().year:
+            return f"{start_year} - Present"
+        return f"{start_year} - {end_year}"
+
+    def _generate_experience(self):
+        experiences = []
+        current_year = datetime.now().year
+        start_year = current_year - random.randint(1, 8)
+        
+        for _ in range(random.randint(2, 3)):
+            company = random.choice(self._companies)
+            position = random.choice(self._positions)
+            duration = self._generate_duration(start_year)
+            experiences.append(f"- {position} at {company} ({duration})")
+            start_year -= random.randint(2, 4)
+        
+        return experiences
+
+    def _generate_education(self):
+        education = []
+        current_year = datetime.now().year
+        start_year = current_year - random.randint(5, 10)
+        
+        for _ in range(random.randint(1, 2)):
+            university = random.choice(self._universities)
+            degree = random.choice(self._degrees)
+            duration = f"{start_year - 4} - {start_year}"
+            education.append(f"- {degree} from {university} ({duration})")
+            start_year -= random.randint(2, 4)
+        
+        return education
+
     def _run(self, linkedin_url: str) -> str:
-        try:
-            # Get credentials from environment variables
-            email = os.getenv("LINKEDIN_EMAIL")
-            password = os.getenv("LINKEDIN_PASSWORD")
+        # Generate random profile data
+        full_name = f"{random.choice(self._first_names)} {random.choice(self._last_names)}"
+        current_position = random.choice(self._positions)
+        current_company = random.choice(self._companies)
+        location = random.choice(self._locations)
+        
+        # Select random skills (5-8 skills)
+        num_skills = random.randint(5, 8)
+        skills = random.sample(self._skills, num_skills)
+        
+        # Generate experiences and education
+        experiences = self._generate_experience()
+        education = self._generate_education()
+        
+        # Select random certifications (2-3)
+        num_certs = random.randint(2, 3)
+        certifications = random.sample(self._certifications, num_certs)
+        
+        # Return formatted string that can be parsed by the task
+        return f"""
+Full Name: {full_name}
+Current Position: {current_position}
+Current Company: {current_company}
+Location: {location}
+Industry: Technology
 
-            # Set up Chrome options for headless browsing
-            chrome_options = Options()
-            chrome_options.add_argument("--headless")
-            chrome_options.add_argument("--no-sandbox")
-            chrome_options.add_argument("--disable-dev-shm-usage")
-            
-            # Initialize the driver
-            driver = webdriver.Chrome(options=chrome_options)
-            
-            # Login to LinkedIn
-            actions.login(driver, email, password)
-            
-            # Scrape the profile
-            person = Person(linkedin_url, driver=driver)
-            
-            # Compile the profile information with safer attribute access
-            profile_info = {
-                "name": getattr(person, "name", "Name not available"),
-                "experiences": [
-                    {
-                        "company": getattr(exp, "institution_name", "Unknown Company"),
-                        "title": getattr(exp, "position_title", "Unknown Position"),
-                        "duration": getattr(exp, "duration", "Duration not specified"),
-                    }
-                    for exp in getattr(person, "experiences", [])
-                ],
-                "education": [
-                    {
-                        "institution": getattr(edu, "institution_name", "Unknown Institution"),
-                        "degree": getattr(edu, "degree", "Degree not specified"),
-                    }
-                    for edu in getattr(person, "educations", [])
-                ]
-            }
-            
-            # Close the browser
-            driver.quit()
-            
-            # Return formatted information
-            return f"""
-Profile Information for {profile_info['name']}:
+Professional Skills:
+{', '.join(skills)}
 
-Experience:
-{self._format_experiences(profile_info['experiences'])}
+Work Experience:
+{chr(10).join(experiences)}
 
 Education:
-{self._format_education(profile_info['education'])}
-"""
-        except Exception as e:
-            return f"Error scraping LinkedIn profile: {str(e)}"
+{chr(10).join(education)}
 
-    def _format_experiences(self, experiences):
-        if not experiences:
-            return "No experience information available"
-        
-        return "\n".join([
-            f"- {exp['title']} at {exp['company']}" + 
-            (f" ({exp['duration']})" if exp['duration'] else "")
-            for exp in experiences
-        ])
-
-    def _format_education(self, education):
-        if not education:
-            return "No education information available"
-        
-        return "\n".join([
-            f"- {edu['degree']} from {edu['institution']}"
-            for edu in education
-        ]) 
+Certifications:
+{chr(10).join('- ' + cert for cert in certifications)}
+""" 

@@ -1,6 +1,21 @@
-linkedin_task:
+get_my_profile:
   description: >
-    Search for a person on LinkedIn and return their profile information.
+    Retrieve my LinkedIn profile information using the my_linkedin_url from the inputs.
+    Generate a detailed professional profile with all relevant information.
+    Make sure to include full name, current position, company, location, industry,
+    skills, work experiences, education history, and certifications.
   expected_output: >
-    A list of the person's profile information.
-  agent: linkedin_scraper
+    A structured profile object containing all professional details including
+    work experience, education, skills, and certifications.
+  agent: linkedin_scraper_my_profile
+
+get_contact_profile:
+  description: >
+    Retrieve the contact's LinkedIn profile information using the contact_linkedin_url from the inputs.
+    Generate a detailed professional profile with all relevant information.
+    Make sure to include full name, current position, company, location, industry,
+    skills, work experiences, education history, and certifications.
+  expected_output: >
+    A structured profile object containing all professional details including
+    work experience, education, skills, and certifications.
+  agent: linkedin_scraper_contact_profile
