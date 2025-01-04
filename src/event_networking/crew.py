@@ -3,24 +3,41 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import SerperDevTool
 from event_networking.tools.linkedin_tool import LinkedInProfileTool
+from event_networking.models.profile import UserProfile
 
 @CrewBase
 class EventNetworkingCrew():
   """Event Networking crew"""
+
+
+  @agent
+  def linkedin_scraper_my_profile(self) -> Agent:
+    return Agent(
+      config=self.agents_config['linkedin_scraper_my_profile'],
+      verbose=True,
+      tools=[LinkedInProfileTool()]
+    )
   
   @agent
-  def linkedin_scraper(self) -> Agent:
+  def linkedin_scraper_contact_profile(self) -> Agent:
     return Agent(
-      config=self.agents_config['linkedin_scraper'],
+      config=self.agents_config['linkedin_scraper_contact_profile'],
       verbose=True,
       tools=[LinkedInProfileTool()]
     )
 
   @task
-  def linkedin_task(self) -> Task:
+  def get_my_profile(self) -> Task:
     return Task(
-      config=self.tasks_config['linkedin_task'],
-      #output_file='output/linkedin.md'
+      config=self.tasks_config['get_my_profile'],
+      output_pydantic=UserProfile
+    )
+
+  @task
+  def get_contact_profile(self) -> Task:
+    return Task(
+      config=self.tasks_config['get_contact_profile'],
+      output_pydantic=UserProfile
     )
 
   @crew
@@ -29,5 +46,6 @@ class EventNetworkingCrew():
     return Crew(
       agents=self.agents, # Automatically created by the @agent decorator
       tasks=self.tasks, # Automatically created by the @task decorator
+      process=Process.sequential,
       verbose=True,
     )
