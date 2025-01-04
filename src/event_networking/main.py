@@ -40,7 +40,7 @@ def run():
         sys.exit(1)
         
     inputs = {
-        'linkedInUrl': 'https://www.linkedin.com/in/williamhgates/'
+        'linkedInUrl': 'https://www.linkedin.com/in/swapnil-chhatre-221159162/'
     }
     
     try:

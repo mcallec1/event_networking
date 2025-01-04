@@ -47,23 +47,23 @@ class LinkedInProfileTool(BaseTool):
             # Scrape the profile
             person = Person(linkedin_url, driver=driver)
             
-            # Compile the profile information
+            # Compile the profile information with safer attribute access
             profile_info = {
-                "name": f"{person.first_name} {person.last_name}",
+                "name": getattr(person, "name", "Name not available"),
                 "experiences": [
                     {
-                        "company": exp.institution_name,
-                        "title": exp.position_title,
-                        "duration": exp.duration,
+                        "company": getattr(exp, "institution_name", "Unknown Company"),
+                        "title": getattr(exp, "position_title", "Unknown Position"),
+                        "duration": getattr(exp, "duration", "Duration not specified"),
                     }
-                    for exp in person.experiences
+                    for exp in getattr(person, "experiences", [])
                 ],
                 "education": [
                     {
-                        "institution": edu.institution_name,
-                        "degree": edu.degree,
+                        "institution": getattr(edu, "institution_name", "Unknown Institution"),
+                        "degree": getattr(edu, "degree", "Degree not specified"),
                     }
-                    for edu in person.educations
+                    for edu in getattr(person, "educations", [])
                 ]
             }
             

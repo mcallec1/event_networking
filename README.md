@@ -15,9 +15,33 @@ pip install uv
 Next, navigate to your project directory and install the dependencies:
 
 (Optional) Lock the dependencies and install them by using the CLI command:
+
 ```bash
 crewai install
 ```
+
+### System Dependencies
+
+This project requires certain system libraries for web automation features. Install them using your system's package manager:
+
+On macOS (using Homebrew):
+
+```bash
+brew install glib nss nspr libxcb
+```
+
+On Ubuntu/Debian:
+
+```bash
+sudo apt-get install libglib2.0-0 libnss3 libnssutil3 libnspr4 libxcb1
+```
+
+On Fedora/RHEL:
+
+```bash
+sudo dnf install glib2 nss nspr libxcb
+```
+
 ### Customizing
 
 **Add your `OPENAI_API_KEY` into the `.env` file**
@@ -46,6 +70,7 @@ The event_networking Crew is composed of multiple AI agents, each with unique ro
 ## Support
 
 For support, questions, or feedback regarding the EventNetworking Crew or crewAI.
+
 - Visit our [documentation](https://docs.crewai.com)
 - Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
 - [Join our Discord](https://discord.com/invite/X4JWnZnxPb)
