@@ -19,3 +19,15 @@ get_contact_profile:
     A structured profile object containing all professional details including
     work experience, education, skills, and certifications.
   agent: linkedin_scraper_contact_profile
+
+webscraping_event:
+  description: >
+    Scrape the event content on the web using {event_url}.
+    Be sure to provide the event data including title, date, organization, 
+    leader or speaker or instructor, URL, and content.
+    You must store the event data in the required format
+    and accurate response to the user without assumption.
+  expected_output: >
+    The event content from the webpage should be provided.
+    The event data is in JSON format.
+  agent: event_researcher

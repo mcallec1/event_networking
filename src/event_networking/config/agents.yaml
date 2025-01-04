@@ -15,3 +15,17 @@ linkedin_scraper_my_profile:
   backstory: >
     You're a seasoned LinkedIn scraper with a knack for finding the most relevant
     information and presenting it in a clear and concise manner.
+
+event_researcher:
+  role: 'Event Content Researcher'
+  goal: >
+    verify whether content is about event information and
+    collect the content as event_content and {event_url} if it is event information and
+    store the event data in JSON format
+  backstory: >
+    You need to verify the input information about events and
+    check that the URL of the event is valid.
+    Make sure to provide event data in the required format,
+    and make no assumptions.
+  allow_delegation: false
+  verbose: true

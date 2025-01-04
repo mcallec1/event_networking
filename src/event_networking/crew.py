@@ -1,14 +1,13 @@
 # src/latest_ai_development/crew.py
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from crewai_tools import SerperDevTool
+from crewai_tools import SerperDevTool, ScrapeWebsiteTool
 from event_networking.tools.linkedin_tool import LinkedInProfileTool
 from event_networking.models.profile import UserProfile
 
 @CrewBase
 class EventNetworkingCrew():
   """Event Networking crew"""
-
 
   @agent
   def linkedin_scraper_my_profile(self) -> Agent:
@@ -26,6 +25,14 @@ class EventNetworkingCrew():
       tools=[LinkedInProfileTool()]
     )
 
+  @agent
+  def event_researcher(self) -> Agent:
+    return Agent(
+      config=self.agents_config['event_researcher'],
+      verbose=True,
+      tools=[ScrapeWebsiteTool()]
+    )
+
   @task
   def get_my_profile(self) -> Task:
     return Task(
@@ -38,6 +45,12 @@ class EventNetworkingCrew():
     return Task(
       config=self.tasks_config['get_contact_profile'],
       output_pydantic=UserProfile
+    )
+
+  @task
+  def webscraping_event(self) -> Task:
+    return Task(
+      config=self.tasks_config['webscraping_event']
     )
 
   @crew
