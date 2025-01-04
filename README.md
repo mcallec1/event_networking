@@ -20,6 +20,31 @@ Next, navigate to your project directory and install the dependencies:
 crewai install
 ```
 
+### Additional Setup for LinkedIn Integration
+
+The project includes LinkedIn profile scraping functionality. To set this up:
+
+1. Install the required packages:
+
+```bash
+uv pip install playwright beautifulsoup4
+```
+
+2. Install Playwright's browser (only needs to be done once):
+
+```bash
+playwright install chromium
+```
+
+3. Configure your LinkedIn credentials in the `.env` file:
+
+```
+LINKEDIN_EMAIL=your-linkedin-email
+LINKEDIN_PASSWORD=your-linkedin-password
+```
+
+Note: The LinkedIn scraping functionality works both locally and in cloud environments like Google IDX. No additional system dependencies are required.
+
 ### System Dependencies
 
 This project requires certain system libraries for web automation features. Install them using your system's package manager:
@@ -61,7 +86,17 @@ $ crewai run
 
 This command initializes the event_networking Crew, assembling the agents and assigning them tasks as defined in your configuration.
 
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+### Using the LinkedIn Integration
+
+The LinkedIn tool allows you to fetch profile information from LinkedIn. Here's how it works:
+
+1. Make sure you've completed the LinkedIn setup steps above
+2. The tool will automatically handle browser automation and login
+3. You can provide LinkedIn profile URLs to the tool for information extraction
+4. The tool works in headless mode, so no browser window will be visible
+5. Rate limiting is implemented to avoid being blocked by LinkedIn
+
+Note: Please be mindful of LinkedIn's terms of service regarding data scraping.
 
 ## Understanding Your Crew
 
