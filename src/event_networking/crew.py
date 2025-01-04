@@ -2,38 +2,28 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import SerperDevTool
+from event_networking.tools.linkedin_tool import LinkedInProfileTool
 
 @CrewBase
 class EventNetworkingCrew():
   """Event Networking crew"""
-
+  
   @agent
-  def researcher(self) -> Agent:
+  def linkedin_scraper(self) -> Agent:
     return Agent(
-      config=self.agents_config['researcher'],
+      config=self.agents_config['linkedin_scraper'],
       verbose=True,
-      tools=[SerperDevTool()]
-    )
-
-  @agent
-  def reporting_analyst(self) -> Agent:
-    return Agent(
-      config=self.agents_config['reporting_analyst'],
-      verbose=True
+      tools=[LinkedInProfileTool()]
     )
 
   @task
-  def research_task(self) -> Task:
+  def linkedin_task(self) -> Task:
     return Task(
-      config=self.tasks_config['research_task'],
+      config=self.tasks_config['linkedin_task'],
+      #output_file='output/linkedin.md'
     )
 
-  @task
-  def reporting_task(self) -> Task:
-    return Task(
-      config=self.tasks_config['reporting_task'],
-      output_file='output/report.md' # This is the file that will be contain the final report.
-    )
+
 
   @crew
   def crew(self) -> Crew:
