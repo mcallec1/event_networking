@@ -28,10 +28,9 @@ class LinkedInProfileTool(BaseTool):
 
     def _run(self, linkedin_url: str) -> str:
         try:
-            # Get credentials from environment variables (recommended approach)
-            email = "marc.callec@gmail.com"
-            password ="aicamp25"
-
+            # Get credentials from environment variables
+            email = os.getenv("LINKEDIN_EMAIL")
+            password = os.getenv("LINKEDIN_PASSWORD")
 
             # Set up Chrome options for headless browsing
             chrome_options = Options()

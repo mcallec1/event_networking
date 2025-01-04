@@ -40,9 +40,7 @@ def run():
         sys.exit(1)
         
     inputs = {
-        'linkedInUrl': 'https://www.linkedin.com/in/swapnil-chhatre-221159162/',
-        'email': os.getenv('LINKEDIN_EMAIL'),
-        'password': os.getenv('LINKEDIN_PASSWORD')
+        'linkedInUrl': 'https://www.linkedin.com/in/williamhgates/'
     }
     
     try:
