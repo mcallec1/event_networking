@@ -19,7 +19,7 @@ def run():
         sys.exit(1)
         
     inputs = {
-        'my_linkedin_url': 'https://www.linkedin.com/in/',
+        'my_linkedin_url': 'https://www.linkedin.com/in/my-profile/',
         'contact_linkedin_url': 'https://www.linkedin.com/in/contact-profile/',  # Replace with actual contact URL
         'event_url': 'https://www.aicamp.ai/event/eventdetails/W2025010100/'  # Replace with actual event URL
     }
