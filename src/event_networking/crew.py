@@ -3,6 +3,7 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import SerperDevTool, ScrapeWebsiteTool
 from event_networking.tools.linkedin_tool import LinkedInProfileTool
+from event_networking.tools.custom_tool import MarkdownWriterTool
 from event_networking.models.profile import UserProfile
 
 @CrewBase
@@ -33,6 +34,22 @@ class EventNetworkingCrew():
       tools=[ScrapeWebsiteTool()]
     )
 
+  @agent
+  def profile_analyzer(self) -> Agent:
+    return Agent(
+      config=self.agents_config['profile_analyzer'],
+      verbose=True,
+      tools=[]  # This agent will use built-in LLM capabilities for analysis
+    )
+
+  @agent
+  def message_formatter(self) -> Agent:
+    return Agent(
+      config=self.agents_config['message_formatter'],
+      verbose=True,
+      tools=[MarkdownWriterTool()]
+    )
+
   @task
   def get_my_profile(self) -> Task:
     return Task(
@@ -51,6 +68,18 @@ class EventNetworkingCrew():
   def webscraping_event(self) -> Task:
     return Task(
       config=self.tasks_config['webscraping_event']
+    )
+
+  @task
+  def analyze_and_create_messages(self) -> Task:
+    return Task(
+      config=self.tasks_config['analyze_and_create_messages']
+    )
+
+  @task
+  def format_and_save_message(self) -> Task:
+    return Task(
+      config=self.tasks_config['format_and_save_message']
     )
 
   @crew
